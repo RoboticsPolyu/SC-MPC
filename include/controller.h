@@ -56,6 +56,8 @@ public:
 
   void set_hover_thrust(float hover_thrust) { thr2acc_ = param_.gra / hover_thrust; }
 
+  double get_thr2acc(void) { return thr2acc_; }
+  
   Odom_Data_t add_Guassian_noise(const Odom_Data_t &odom);
 
   const Parameter_t & get_param() { return param_; };

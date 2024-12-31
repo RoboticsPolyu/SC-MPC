@@ -23,7 +23,7 @@ auto_takeoff_land:
     enable: true
     enable_auto_arm: true
     no_RC: false
-    takeoff_height: 1.5 # m
+    takeoff_height: 1.0 # m
     takeoff_land_speed: 0.20 # m/s
 
 thrust_model: # The model that maps thrust signal thr_bodyrate_u(0~1) to real thrust force F(Unit:N): F=K1*Voltage^K2*(K3*thr_bodyrate_u^2+(1-K3)*thr_bodyrate_u). 
@@ -72,9 +72,9 @@ rotor_drag:
     # y: 0.22  # Same as above
     # z: 0.31  # Same as above
     # k_thrust_horz: 0.005 #0.007 # Set to 0 recommended... --
-    x: 0.  # The reduced acceleration on each axis caused by rotor drag. Unit:(m*s^-2)/(m*s^-1).
-    y: 0.  # Same as above
-    z: 0.  # Same as above
+    x: -8.0  # The reduced acceleration on each axis caused by rotor drag. Unit:(m*s^-2)/(m*s^-1). k
+    y: -1.31   # Same as above D
+    z: -0.33 # Same as above D1
     k_thrust_horz: 0.00 #0.007 # Set to 0 recommended... --
 
 msg_timeout:
@@ -91,17 +91,17 @@ Factor_graph:
     PRI_VICON_VEL_COV: 0.001
 
     CONTROL_P_COV_X:   0.15
-    CONTROL_PF_COV_X:  0.03
+    CONTROL_PF_COV_X:  0.05
     CONTROL_P_COV_Y:   0.15
-    CONTROL_PF_COV_Y:  0.03
+    CONTROL_PF_COV_Y:  0.05
     CONTROL_P_COV_Z:   0.20
-    CONTROL_PF_COV_Z:  0.03
+    CONTROL_PF_COV_Z:  0.05
 
     CONTROL_R3_COV:    0.03
-    CONTROL_R2_COV:    0.4
-    CONTROL_R1_COV:    0.4
+    CONTROL_R2_COV:    0.3
+    CONTROL_R1_COV:    0.3
 
-    CONTROL_V_COV:     1.3
+    CONTROL_V_COV:     2.3
     DYNAMIC_P_COV:     0.0001
     DYNAMIC_R_COV:     0.0001
     DYNAMIC_V_COV:     0.0001
@@ -122,12 +122,12 @@ Factor_graph:
     WINDOW_SIZE:   5
 
     POS_MEAS_MEAN:      0.000
-    POS_MEAS_COV:       0.500 # 0.05
+    POS_MEAS_COV:       0.010 # 0.05
     VEL_MEAS_COV:       0.050
-    ROT_MEAS_COV:       0.001
+    ROT_MEAS_COV:       0.010
     
     PRIOR_POS_MEAS_COV: 0.01 # 0.05
-    PRIOR_VEL_MEAS_COV: 0.50
+    PRIOR_VEL_MEAS_COV: 0.05
     PRIOR_ROT_MEAS_COV: 0.10
 
     # IMU Params

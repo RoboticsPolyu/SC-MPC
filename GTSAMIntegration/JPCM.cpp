@@ -55,8 +55,8 @@ void buildJPCMFG::buildFusionFG(gtsam_fg&  _graph,
   
   // Bias noise
   auto bias_noise        = noiseModel::Diagonal::Sigmas(
-    (Vector(6) << Vector3(param_.factor_graph.acc_bias_imu_x, param_.factor_graph.acc_bias_imu_x, param_.factor_graph.acc_bias_imu_x), 
-    Vector3(param_.factor_graph.gyro_bias_sigma_x, param_.factor_graph.gyro_bias_sigma_x, param_.factor_graph.gyro_bias_sigma_x)).finished());
+    (Vector(6) << Vector3(param_.factor_graph.acc_bias_imu_x, param_.factor_graph.acc_bias_imu_x, param_.factor_graph.acc_bias_imu_x)* std::sqrt(dt), 
+    Vector3(param_.factor_graph.gyro_bias_sigma_x, param_.factor_graph.gyro_bias_sigma_x, param_.factor_graph.gyro_bias_sigma_x)* std::sqrt(dt)).finished());
   
   // Prior noise
   auto prior_bias_noise  = noiseModel::Diagonal::Sigmas(
@@ -87,12 +87,12 @@ void buildJPCMFG::buildFusionFG(gtsam_fg&  _graph,
         float __dt = (odom_v[idx - state_idx].rcv_stamp - odom_v[idx - state_idx - 1].rcv_stamp).toSec();
         if(!param_.factor_graph.opt_gravity_rot)
         {
-          graph_positioning_.add(IMUFactor(X(idx-1+IDX_P_START), V(idx-1+IDX_P_START), B(idx-1+IDX_P_START), X(idx+IDX_P_START), V(idx+IDX_P_START), dt, 
+          graph_positioning_.add(IMUFactor(X(idx-1+IDX_P_START), V(idx-1+IDX_P_START), B(idx-1+IDX_P_START), X(idx+IDX_P_START), V(idx+IDX_P_START), __dt, 
           imu_v[idx - state_idx].a, imu_v[idx - state_idx].w, imu_factor_noise));
         }
         else
         {
-          graph_positioning_.add(IMUFactorRg(X(idx-1+IDX_P_START), V(idx-1+IDX_P_START), B(idx-1+IDX_P_START), X(idx+IDX_P_START), V(idx+IDX_P_START), R(0), dt, 
+          graph_positioning_.add(IMUFactorRg(X(idx-1+IDX_P_START), V(idx-1+IDX_P_START), B(idx-1+IDX_P_START), X(idx+IDX_P_START), V(idx+IDX_P_START), R(0), __dt, 
             imu_v[idx - state_idx].a, imu_v[idx - state_idx].w, imu_factor_noise));
         }
         _initial_value.insert(B(idx-1+IDX_P_START), prior_bias);
@@ -129,55 +129,6 @@ void buildJPCMFG::buildFusionFG(gtsam_fg&  _graph,
   }
   else
   {
-    // gtsam::FastVector<gtsam::Key> keysToMarginalize;
-    // keysToMarginalize.push_back(X(state_idx-1+IDX_P_START));
-    // keysToMarginalize.push_back(V(state_idx-1+IDX_P_START));
-    // keysToMarginalize.push_back(B(state_idx-1+IDX_P_START));
-
-    // boost::shared_ptr<gtsam_fg> margGraph;
-    // margGraph = marginalizeOut(graph_positioning_, _initial_value, keysToMarginalize, nullptr, true);
-
-    // graph_positioning_ = *margGraph;
-    // // add new measurements factor
-    // uint16_t    idx =  window_lens_ + state_idx - 1 + IDX_P_START;
-    // gtsam::Rot3 rot = gtsam::Rot3(odom_v[window_lens_-1].q);
-    // gtsam::Pose3 pose(rot, odom_v[window_lens_-1].p);
-
-    // if(param_.factor_graph.use_rot)
-    // {
-    //   graph_positioning_.add(gtsam::PriorFactor<gtsam::Pose3>(X(idx), pose, vicon_noise));
-    // }
-    // else
-    // {
-    //   graph_positioning_.add(gtsam::GPSFactor(X(idx), odom_v[window_lens_-1].p, noise_model_gps)); 
-    // }
-
-    // float __dt = (odom_v[window_lens_-1].rcv_stamp - odom_v[window_lens_-2].rcv_stamp).toSec();
-    // std::cout << " __dt is : " << __dt << std::endl;
-    // // graph_positioning_.add(gtsam::PriorFactor<gtsam::Vector3>(V(idx), odom_v[window_lens_-1].v, vel_noise)); 
-    // if(!param_.factor_graph.opt_gravity_rot)
-    // {
-    //   graph_positioning_.add(IMUFactor(X(idx-1), V(idx-1), B(idx-1), X(idx), V(idx), __dt, imu_v[window_lens_-1].a, imu_v[window_lens_-1].w, imu_factor_noise));
-    // }
-    // else
-    // {
-    //   graph_positioning_.add(IMUFactorRg(X(idx-1), V(idx-1), B(idx-1), X(idx), V(idx), R(0), __dt, imu_v[window_lens_-1].a, imu_v[window_lens_-1].w, imu_factor_noise));
-    // }
-    
-    // gtsam_imuBi zero_bias(gtsam::Vector3(0,0,0), gtsam::Vector3(0,0,0));
-    // graph_positioning_.add(BetweenFactor<gtsam_imuBi>(B(idx-1), B(idx), zero_bias, bias_noise));
-
-    // gtsam::Pose3   __pose     = _initial_value.at<Pose3>  (X(idx-1));
-    // gtsam::Vector3 __vel      = _initial_value.at<Vector3>(V(idx-1));
-    // gtsam_imuBi    __imu_bias = _initial_value.at<gtsam_imuBi>(B(idx-1));
-
-    // std::pair<gtsam::Pose3, gtsam::Vector3> pred_State = 
-    //   propagateIMU(__pose, __vel, __imu_bias.correctAccelerometer(imu_v[window_lens_-1].a), __imu_bias.correctGyroscope(imu_v[window_lens_-1].w), __dt);
-
-    // _initial_value.insert(B(idx), __imu_bias);
-    // _initial_value.insert(X(idx), pred_State.first);
-    // _initial_value.insert(V(idx), pred_State.second);
-
     gtsam::FastVector<gtsam::Key> keysToMarginalize;
     keysToMarginalize.push_back(X(state_idx-1+IDX_P_START));
     keysToMarginalize.push_back(V(state_idx-1+IDX_P_START));

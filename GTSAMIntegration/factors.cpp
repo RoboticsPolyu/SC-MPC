@@ -88,9 +88,26 @@ namespace uavfactor
 
       gtsam::Matrix3 drag_matrix;
       drag_matrix.setZero();
-      drag_matrix.diagonal() << drag_k_;
+      // drag_matrix.diagonal() << drag_k_;
 
-      gtsam::Vector3 vel_err = mass_ * r_w_mi.unrotate(vel_j - vel_i + gI_ * dt_, J_ve_rot1) - gtsam::Vector3(0, 0, 1) * input_i(0) * dt_ - drag_matrix * r_w_mi.unrotate(vel_i, J_dv_rit, J_dv_v) * dt_; // - dT * dt_;
+      // Suction force F in the world frame = 
+      // Fx = 0, Fz = 0, Fy = k* (y - D + D1) k = 8 N/m, D ? D1 = 0.10m
+      float F_w_suction = drag_k_[0] * (p_w_mi.y() - drag_k_[1] + drag_k_[2]);
+      if(F_w_suction < 0)
+      {
+         F_w_suction = 0;
+      }
+      if(F_w_suction >= 0.8)
+      {
+         F_w_suction = 0.8;
+      }
+      gtsam::Vector3 F_w_suction3 = gtsam::Vector3::Zero();
+      F_w_suction3 << 0, F_w_suction, 0;
+
+      // printf(" F_w_suction: [ %f ] \n", F_w_suction);
+
+      gtsam::Vector3 vel_err = mass_ * r_w_mi.unrotate(vel_j - vel_i + gI_ * dt_ - F_w_suction3 * dt_, J_ve_rot1) - gtsam::Vector3(0, 0, 1) * input_i(0) * dt_;
+      // - drag_matrix * r_w_mi.unrotate(vel_i, J_dv_rit, J_dv_v) * dt_; // - dT * dt_;
 
       Matrix96 J_e_pi, J_e_posej;
 

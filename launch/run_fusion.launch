@@ -3,11 +3,11 @@
 	<node pkg="jpcm" type="FakeGPS_IMU_fusion_node" name="FakeGPS_IMU_fusion_node" output="screen">
 
 		<param name="body_pose_topic"   type="string" value="/vicon/odom"/>
-		<param name="imu_data_topic"    type="string" value="/camera/imu"/>
-		<param name="extri_params_file" type="string" value="/home/amov/Fast250/src/jpcm/config/extrinsic.yaml"/>
+		<param name="imu_data_topic"    type="string" value="/mavros/imu/data_raw"/>
+		<param name="extri_params_file" type="string" value="/home/nvidia/JPCM/src/jpcm/config/extrinsic.yaml"/>
 		<param name="body_pose_fusion"  type="string" value="/self/fusion_odom"/>
 
-        <rosparam command="load" file="$(find jpcm)/config/ctrl_param_fpv_MPC_with_fakeGPS_IMU_fusion.yaml" />
+        <rosparam command="load" file="$(find jpcm)/config/ctrl_param_fpv_MPC_vicon.yaml" />
 	</node>
  
 </launch>

@@ -1,0 +1,6 @@
+<launch>
+
+	<node pkg="jpcm" type="Wall_in_proximity_run" name="Wall_in_proximity_run" output="screen">
+	</node>
+ 
+</launch>

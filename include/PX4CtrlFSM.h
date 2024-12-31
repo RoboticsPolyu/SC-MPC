@@ -10,6 +10,7 @@
 #include <mavros_msgs/SetMode.h>
 #include <mavros_msgs/CommandLong.h>
 #include <mavros_msgs/CommandBool.h>
+#include <std_msgs/Float64.h>
 #include "TrustMoments.h"
 
 #include "input.h"
@@ -54,6 +55,8 @@ public:
 	ros::Publisher traj_start_trig_pub;
 	ros::Publisher ctrl_FCU_pub;
 	ros::Publisher debug_pub; //debug
+	ros::Publisher thr2acc_pub;
+
 	ros::ServiceClient set_FCU_mode_srv;
 	ros::ServiceClient arming_client_srv;
 	ros::ServiceClient reboot_FCU_srv;

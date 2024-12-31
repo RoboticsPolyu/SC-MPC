@@ -4,12 +4,18 @@
         <!-- <remap from="~odom" to="/vicon_imu_ekf_odom" /> -->	
 		<remap from="~GT"   to="/vicon/odom" />
 		<!-- rev from FakeGPS + IMU Fusion-->
-		<!-- <remap from="~odom" to="/self/fusion_odom" /> -->
-		<remap from="~odom" to="/vicon/odom" />
+
+		<!-- <remap from="~odom" to="/self/fusion_odom" />  -->
+		<!-- use the GNSS-IMU fusion as the positioning source -->
+
+		<remap from="~odom" to="/vicon/odom" /> 
+		<!-- use the VICON as the positioning source-->
+
 		<remap from="~acc"  to="/vrpn_client_node/Quad13_ipn/accel" />
 		<remap from="~cmd"  to="/position_cmd" />
 
-        <rosparam command="load" file="$(find jpcm)/config/ctrl_param_fpv.yaml" />
+        <!-- <rosparam command="load" file="$(find jpcm)/config/ctrl_param_fpv_MPC_with_fakeGPS_IMU_fusion.yaml" /> -->
+		<rosparam command="load" file="$(find jpcm)/config/ctrl_param_fpv_JPCM.yaml" />
 	</node>
  
 </launch>

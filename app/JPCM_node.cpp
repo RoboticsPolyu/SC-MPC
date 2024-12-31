@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
                                                 ros::TransportHints().tcpNoDelay());
 
     ros::Subscriber takeoff_land_sub =
-        nh.subscribe<quadrotor_msgs::TakeoffLand>("takeoff_land",
+        nh.subscribe<quadrotor_msgs::TakeoffLand>("/takeoff_land",
                                                   100,
                                                   boost::bind(&Takeoff_Land_Data_t::feed, &fsm.takeoff_land_data, _1),
                                                   ros::VoidConstPtr(),
@@ -114,6 +114,7 @@ int main(int argc, char *argv[])
     fsm.set_FCU_mode_srv    = nh.serviceClient<mavros_msgs::SetMode>    ("/mavros/set_mode");
     fsm.arming_client_srv   = nh.serviceClient<mavros_msgs::CommandBool>("/mavros/cmd/arming");
     fsm.reboot_FCU_srv      = nh.serviceClient<mavros_msgs::CommandLong>("/mavros/cmd/command");
+    fsm.thr2acc_pub         = nh.advertise<std_msgs::Float64>           ("/ductQuad/thrust2acc", 10);
 
     ros::Duration(0.5).sleep();
 

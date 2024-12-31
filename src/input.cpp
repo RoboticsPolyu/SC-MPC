@@ -131,7 +131,9 @@ Odom_Data_t::Odom_Data_t()
 void Odom_Data_t::feed(nav_msgs::OdometryConstPtr pMsg)
 {
     ros::Time now = ros::Time::now();
-
+    std::stringstream ss;
+    ss << now.sec << "." << now.nsec;
+    // std::cout << " ---- rev vicon msg --- time is " << ss.str() << std::endl;
     msg = *pMsg;
     rcv_stamp = now;
     recv_new_msg = true;
@@ -353,4 +355,5 @@ void Takeoff_Land_Data_t::feed(quadrotor_msgs::TakeoffLandConstPtr pMsg)
 
     triggered = true;
     takeoff_land_cmd = pMsg->takeoff_land_cmd;
+    ROS_INFO(" -- rev takeoff cmd! ");
 }

@@ -11,7 +11,7 @@ max_manual_vel   : 1.0
 max_angle: 80  # Attitude angle limit in degree. A negative value means no limit.
 low_voltage: 13.2 # 4S battery
 odom_freq: 100
-ctrl_mode: 2      # DFBC 1 MPC 2 JPCM 3
+ctrl_mode: 3      # DFBC 1 MPC 2 JPCM 3
 
 rc_reverse: # *
     roll: false
@@ -90,18 +90,18 @@ Factor_graph:
     PRI_VICON_POS_COV: 0.001
     PRI_VICON_VEL_COV: 0.001
 
-    CONTROL_P_COV_X:   0.25
+    CONTROL_P_COV_X:   0.30
     CONTROL_PF_COV_X:  0.10
-    CONTROL_P_COV_Y:   0.25
+    CONTROL_P_COV_Y:   0.30
     CONTROL_PF_COV_Y:  0.10
-    CONTROL_P_COV_Z:   0.25
+    CONTROL_P_COV_Z:   0.30
     CONTROL_PF_COV_Z:  0.10
 
     CONTROL_R3_COV:    0.03
     CONTROL_R2_COV:    0.7
     CONTROL_R1_COV:    0.7
 
-    CONTROL_V_COV:     3.0
+    CONTROL_V_COV:     5.3
     DYNAMIC_P_COV:     0.0001
     DYNAMIC_R_COV:     0.0001
     DYNAMIC_V_COV:     0.0001
@@ -118,17 +118,17 @@ Factor_graph:
     G_CLF_THR:         0.1
     CLF_ALPHA:         1
 
-    OPT_LENS_TRAJ: 20
+    OPT_LENS_TRAJ: 15
     WINDOW_SIZE:   5
 
     POS_MEAS_MEAN:      0.000
     POS_MEAS_COV:       0.200 # 0.05
     VEL_MEAS_COV:       0.050
-    ROT_MEAS_COV:       0.100
+    ROT_MEAS_COV:       0.001
     
-    PRIOR_POS_MEAS_COV: 0.050 # 0.05
-    PRIOR_VEL_MEAS_COV: 1.000
-    PRIOR_ROT_MEAS_COV: 0.100
+    PRIOR_POS_MEAS_COV: 0.01 # 0.05
+    PRIOR_VEL_MEAS_COV: 0.50
+    PRIOR_ROT_MEAS_COV: 0.10
 
     # IMU Params
     acc_sigma_x:        0.224 # 0.3

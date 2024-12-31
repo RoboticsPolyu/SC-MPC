@@ -364,6 +364,10 @@ void PX4CtrlFSM::process()
 	// STEP4: publish control commands to mavros
 	if (param.use_bodyrate_ctrl)
 	{
+		std_msgs::Float64 msg;
+		msg.data = controller.get_thr2acc(); 
+		thr2acc_pub.publish(msg);
+
 		publish_bodyrate_ctrl(thr_bodyrate_u, now_time);
 	}
 	else

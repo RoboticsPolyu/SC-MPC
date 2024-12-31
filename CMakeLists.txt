@@ -35,6 +35,17 @@ include_directories(
   ${YAML_CPP_INCLUDE_DIRS}
 )
 
+add_library(jpcm_lib 
+            GTSAMIntegration/factors.cpp
+            GTSAMIntegration/GTSAMUtils.cpp
+            GTSAMIntegration/JPCM.cpp
+            GTSAMIntegration/Marginalization.cpp    
+            src/controller.cpp
+            src/PX4CtrlParam.cpp
+            src/input.cpp)
+
+target_link_libraries(jpcm_lib PUBLIC ${catkin_LIBRARIES} gtsam gtsam_unstable ${YAML_CPP_LIBRARIES})
+
 add_executable(gps_imu        
   src/gps_imu.cpp
   app/gps_imu_node.cpp
@@ -59,71 +70,54 @@ add_executable(odom_node
 add_dependencies(odom_node quadrotor_msgs geometry_msgs)
 
 target_link_libraries(odom_node
-  ${catkin_LIBRARIES}
   gtsam
   gtsam_unstable
-  ${YAML_CPP_LIBRARIES}
+  jpcm_lib
 )
 
 add_executable(JPCM_node 
   app/JPCM_node.cpp
-  src/controller.cpp
-  src/input.cpp  
   src/PX4CtrlFSM.cpp
-  src/PX4CtrlParam.cpp
-  GTSAMIntegration/factors.cpp
-  GTSAMIntegration/GTSAMUtils.cpp
-  GTSAMIntegration/JPCM.cpp
-  GTSAMIntegration/Marginalization.cpp
 )
 
 add_dependencies(JPCM_node quadrotor_msgs)
 
 target_link_libraries(JPCM_node
-  ${catkin_LIBRARIES}
   gtsam 
   gtsam_unstable
-  ${YAML_CPP_LIBRARIES}
+  jpcm_lib
 )
 
 catkin_install_python(PROGRAMS thrust_calibrate_scrips/thrust_calibrate.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-add_executable(test_jpcm        
-  GTSAMIntegration/factors.cpp
-  GTSAMIntegration/GTSAMUtils.cpp
-  GTSAMIntegration/JPCM.cpp
-  GTSAMIntegration/Marginalization.cpp
-  src/controller.cpp
-  src/PX4CtrlParam.cpp
-  src/input.cpp
-  test/test_jpcm.cpp
-)
+add_executable(test_jpcm test/test_jpcm.cpp)
 
 add_dependencies(test_jpcm quadrotor_msgs geometry_msgs)
 
 target_link_libraries(test_jpcm
-  ${catkin_LIBRARIES}
   gtsam
   gtsam_unstable
-  ${YAML_CPP_LIBRARIES}
+  jpcm_lib
 )
 
-add_executable(FakeGPS_IMU_fusion_node
-  app/FakeGPS_IMU_fusion_node.cpp  
-  GTSAMIntegration/factors.cpp
-  GTSAMIntegration/GTSAMUtils.cpp
-  GTSAMIntegration/JPCM.cpp
-  GTSAMIntegration/Marginalization.cpp    
-  src/controller.cpp
-  src/PX4CtrlParam.cpp
-  src/input.cpp
-)
+add_executable(FakeGPS_IMU_fusion_node app/FakeGPS_IMU_fusion_node.cpp)
 
 add_dependencies(FakeGPS_IMU_fusion_node quadrotor_msgs geometry_msgs)
 
 target_link_libraries(FakeGPS_IMU_fusion_node
+  gtsam
+  gtsam_unstable
+  jpcm_lib
+)
+
+
+add_executable(Wall_in_proximity_run app/Wall_in_proximity_run.cpp)
+
+add_dependencies(Wall_in_proximity_run quadrotor_msgs geometry_msgs)
+
+target_link_libraries(Wall_in_proximity_run
   ${catkin_LIBRARIES}
   gtsam
   gtsam_unstable

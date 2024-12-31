@@ -136,9 +136,9 @@ quadrotor_msgs::Px4ctrlDebug Controller::fusion(const Odom_Data_t &odom, const I
     end   = clock();
     initial_value_ = result; 
     std::cout << " ---------------------------------------------------- Result ----------------------------------------------------" << std::endl;
-    result.print();
+    // result.print();
     opt_cost = (double)(end - start) / CLOCKS_PER_SEC;
-    std::cout << " ---------- Optimize Time: [ " << opt_cost << " ] " << endl;
+    // std::cout << " ---------- Optimize Time: [ " << opt_cost << " ] " << endl;
 
     uint16_t idx = 0;
     if(state_idx_ == 1)
@@ -294,7 +294,7 @@ quadrotor_msgs::Px4ctrlDebug Controller::calculateControl(const Desired_State_t 
     gtsam::Vector3 des_eular_xyz = gtsam::Rot3(des_data_v_[0].q).rpy();
     float          distance_est  = (des_data_v_[0].p - pose.translation()).norm();
 
-    std::cout << " ---------- Optimize Time: [ " << opt_cost << " ], " << "ori distance: [ " << distance << " ], est distance: [" << distance_est << " ]" << endl;
+    // std::cout << " ---------- Optimize Time: [ " << opt_cost << " ], " << "ori distance: [ " << distance << " ], est distance: [" << distance_est << " ]" << endl;
 
     log_ << std::setprecision(19) 
       // Des info 
@@ -405,7 +405,7 @@ quadrotor_msgs::Px4ctrlDebug Controller::calculateControl(const Desired_State_t 
     end = clock();
     opt_cost = (double)(end-start)/CLOCKS_PER_SEC;
     float distance = (des_data_v_[0].p - odom_noise.p).norm();
-    std::cout << " ---------- Optimize Time: [ " << opt_cost << " ], " << "distance: [ " << distance << " ]" << endl;
+    // std::cout << " ---------- Optimize Time: [ " << opt_cost << " ], " << "distance: [ " << distance << " ]" << endl;
     
     gtsam::Vector4 input;
     gtsam::Pose3   pose;
@@ -492,7 +492,7 @@ Controller::Controller(Parameter_t &param) : param_(param)
   opt_traj_lens_ = param_.factor_graph.OPT_LENS_TRAJ;
   window_lens_   = param_.factor_graph.WINDOW_SIZE;
 
-  stringstream ss; ss << "/home/amov/output/controller_log_";
+  stringstream ss; ss << "/home/nvidia/output/controller_log_";
   ss << t->tm_year + 1900 << "-" << t->tm_mon + 1 << "-" << t->tm_mday << "-" << t->tm_hour << "-" << t->tm_min << "-" << t->tm_sec << ".txt";
   std::cout << " -- log file:" << ss.str() << std::endl;
   log_.open(ss.str(), std::ios::out);
@@ -615,6 +615,7 @@ double Controller::computeDesiredCollectiveThrustSignal(const Eigen::Vector3d &d
   double throttle_percentage(0.0);
   
   /* compute throttle, thr2acc has been estimated before */
+  // ROS_INFO(" Thr2acc: %f", thr2acc_);
   throttle_percentage = (des_acc.norm() - param_.rt_drag.k_thrust_horz * (pow(v.x(), 2.0) + pow(v.y(), 2.0)) / param_.mass) / thr2acc_;
   throttle_percentage = limit_value(param_.thr_map.thrust_upper_bound, throttle_percentage, param_.thr_map.thrust_lower_bound);
   return throttle_percentage;
@@ -626,7 +627,7 @@ double Controller::computeDesiredCollectiveThrustSignal(const Eigen::Vector3d &d
 double Controller::computeDesiredCollectiveThrustSignal(const Eigen::Vector3d &des_acc)
 {
   double throttle_percentage(0.0);
-  
+  ROS_INFO(" Thr2acc: %f", thr2acc_);
   /* compute throttle, thr2acc has been estimated before */
   throttle_percentage = des_acc.norm() / thr2acc_;
   throttle_percentage = limit_value(param_.thr_map.thrust_upper_bound, throttle_percentage, param_.thr_map.thrust_lower_bound);
@@ -666,7 +667,7 @@ bool Controller::estimateThrustModel(const Eigen::Vector3d &est_a, const Paramet
     double K = gamma * P_ * thr;
     thr2acc_ = thr2acc_ + K * (est_a(2) - thr * thr2acc_);
     P_ = (1 - K * thr) * P_ / rho2_;
-    printf("Thrust debug [ thr2acc: %6.3f, gamma: %6.3f, K: %6.3f, P: %6.3f, thrust: %6.3f, est_a(2): %6.3f ]\n", thr2acc_, gamma, K, P_, thr, est_a(2));
+    ROS_INFO("Thrust debug [ thr2acc: %6.3f, gamma: %6.3f, K: %6.3f, P: %6.3f, thrust: %6.3f, est_a(2): %6.3f ]\n", thr2acc_, gamma, K, P_, thr, est_a(2));
     fflush(stdout);
 
     // debug_msg_.thr2acc = thr2acc_;

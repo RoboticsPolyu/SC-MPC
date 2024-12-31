@@ -87,9 +87,14 @@ int main(int argc, char *argv[])
     ros::Publisher odom_pub =
         nh.advertise<nav_msgs::Odometry>(body_fusion_tpc, 100);
     
-    ros::Rate r(param.ctrl_freq_max);
+    clock_t start, end;
+
+    // ros::Rate r(param.ctrl_freq_max);
+    ros::Rate r(100);
     while (ros::ok())
     {
+        start = clock();
+
         if(odom_data.recv_new_msg)
         {
             odom_data.recv_new_msg = false;
@@ -114,8 +119,13 @@ int main(int argc, char *argv[])
             send_odom_msg.twist.twist.angular.z = fus_w.z();
             odom_pub.publish(send_odom_msg);
         }
-        r.sleep();
+
         ros::spinOnce();
+        r.sleep();
+        end = clock();
+        float opt_cost = (double)(end - start) / CLOCKS_PER_SEC;
+        std::cout << std::setprecision(19) << " ---------- One Loop Time: [ " << opt_cost << " ] " << endl;
+        
     }
 
     return 0;
