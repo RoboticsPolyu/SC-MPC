@@ -97,14 +97,14 @@ namespace uavfactor
       {
          F_w_suction = 0;
       }
-      if(F_w_suction >= 0.8)
+      if(F_w_suction >= 1.5)
       {
-         F_w_suction = 0.8;
+         F_w_suction = 1.5;
       }
       gtsam::Vector3 F_w_suction3 = gtsam::Vector3::Zero();
       F_w_suction3 << 0, F_w_suction, 0;
 
-      // printf(" F_w_suction: [ %f ] \n", F_w_suction);
+      printf(" F_w_suction: [ %f ] \n", F_w_suction);
 
       gtsam::Vector3 vel_err = mass_ * r_w_mi.unrotate(vel_j - vel_i + gI_ * dt_ - F_w_suction3 * dt_, J_ve_rot1) - gtsam::Vector3(0, 0, 1) * input_i(0) * dt_;
       // - drag_matrix * r_w_mi.unrotate(vel_i, J_dv_rit, J_dv_v) * dt_; // - dT * dt_;

@@ -72,8 +72,8 @@ rotor_drag:
     # y: 0.22  # Same as above
     # z: 0.31  # Same as above
     # k_thrust_horz: 0.005 #0.007 # Set to 0 recommended... --
-    x: -8.0  # The reduced acceleration on each axis caused by rotor drag. Unit:(m*s^-2)/(m*s^-1). k
-    y: -1.31   # Same as above D
+    x: -10.0  # The reduced acceleration on each axis caused by rotor drag. Unit:(m*s^-2)/(m*s^-1). k
+    y: -2.23   # Same as above D
     z: -0.33 # Same as above D1
     k_thrust_horz: 0.00 #0.007 # Set to 0 recommended... --
 

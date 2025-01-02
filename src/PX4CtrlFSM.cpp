@@ -501,7 +501,8 @@ Desired_State_t PX4CtrlFSM::get_takeoff_land_des(const double speed)
 	// takeoff_land.start_pose(2) += speed * delta_t;
 
 	Desired_State_t des;
-	des.p = takeoff_land.start_pose.head<3>() + Eigen::Vector3d(-speed * delta_t / 2.0, speed * delta_t, speed * delta_t);
+	// des.p = takeoff_land.start_pose.head<3>() + Eigen::Vector3d(-speed * delta_t / 2.0, speed * delta_t, speed * delta_t);
+	des.p = takeoff_land.start_pose.head<3>() + Eigen::Vector3d(0, 0, speed * delta_t);
 	des.v = Eigen::Vector3d(-speed / 2.0, speed, speed);
 	des.a = Eigen::Vector3d::Zero();
 	des.j = Eigen::Vector3d::Zero();
